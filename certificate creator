@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>OTP + Custom Certificate Demo</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 30px; }
+    input, button, select { margin: 8px; padding: 8px; }
+    #formSection, #customizeSection, #certificate { display: none; margin-top: 20px; }
+
+    /* Certificate styling */
+    #certificate {
+      border: 8px double #333;
+      padding: 40px;
+      width: 800px;
+      height: 600px;
+      text-align: center;
+      margin-top: 20px;
+      background: linear-gradient(135deg, #ffecd2, #fcb69f, #a1c4fd, #c2e9fb);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    }
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    #certificate h1 {
+      font-family: "Georgia", serif;
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+    #certificate h2 {
+      font-size: 24px;
+      margin: 10px 0;
+    }
+    #certificate p {
+      font-size: 18px;
+      margin: 15px 0;
+    }
+    #signature {
+      margin-top: 50px;
+      font-family: "Brush Script MT", cursive;
+      font-size: 24px;
+      text-align: right;
+      padding-right: 60px;
+    }
+    #certImage {
+      width: 100px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Phone OTP Verification</h2>
+  
+  <!-- Step 1: Enter phone -->
+  <label>Enter Phone Number:</label><br>
+  <input type="text" id="phone"><br>
+  <button onclick="sendOTP()">Send OTP</button>
+  
+  <hr>
+  
+  <!-- Step 2: Enter OTP -->
+  <label>Enter OTP:</label><br>
+  <input type="text" id="otpInput"><br>
+  <button onclick="verifyOTP()">Verify OTP</button>
+  
+  <p id="message"></p>
+  
+  <!-- Step 3: Form -->
+  <div id="formSection">
+    <h3>Enter Your Details</h3>
+    <label>Name:</label><br>
+    <input type="text" id="name"><br>
+    <label>Number:</label><br>
+    <input type="text" id="number"><br>
+    <label>Hobby:</label><br>
+    <input type="text" id="hobby"><br>
+    <button onclick="showCustomization()">Next: Customize Certificate</button>
+  </div>
+  
+  <!-- Step 4: Customization -->
+  <div id="customizeSection">
+    <h3>Customize Your Certificate</h3>
+    <label>Background Color:</label>
+    <input type="color" id="bgColor" value="#ffffff"><br>
+    
+    <label>Border Style:</label>
+    <select id="borderStyle">
+      <option value="double">Double</option>
+      <option value="solid">Solid</option>
+      <option value="dashed">Dashed</option>
+      <option value="groove">Groove</option>
+    </select><br>
+    
+    <label>Font Family:</label>
+    <select id="fontFamily">
+      <option value="Georgia">Georgia</option>
+      <option value="Arial">Arial</option>
+      <option value="Times New Roman">Times New Roman</option>
+      <option value="Courier New">Courier New</option>
+    </select><br>
+    
+    <label>Upload Image (Logo/Chess Piece):</label>
+    <input type="file" id="uploadImage" accept="image/*"><br>
+    
+    <button onclick="generateCertificate()">Generate Certificate</button>
+  </div>
+  
+  <!-- Step 5: Certificate -->
+  <div id="certificate">
+    <h1>Certificate of Appreciation</h1>
+    <h2 id="certName"></h2>
+    <p id="certText"></p>
+    <p><em>Thank you for sharing your passion and dedication. Your contribution is truly valued.</em></p>
+    <img id="certImage" src="" alt="">
+    <div id="signature">~ Signed: The Academy</div>
+  </div>
+  
+  <script>
+    let generatedOTP = "";
+    
+    function sendOTP() {
+      generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
+      alert("OTP sent: " + generatedOTP); // Demo only
+      document.getElementById("message").innerText = "OTP has been sent!";
+    }
+    
+    function verifyOTP() {
+      const entered = document.getElementById("otpInput").value;
+      if (entered === generatedOTP) {
+        document.getElementById("message").innerText = "✅ OTP Verified!";
+        document.getElementById("formSection").style.display = "block";
+      } else {
+        document.getElementById("message").innerText = "❌ Invalid OTP!";
+      }
+    }
+    
+    function showCustomization() {
+      document.getElementById("formSection").style.display = "none";
+      document.getElementById("customizeSection").style.display = "block";
+    }
+    
+    function generateCertificate() {
+      const name = document.getElementById("name").value || "abc";
+      const number = document.getElementById("number").value || "12345";
+      const hobby = document.getElementById("hobby").value || "xyz";
+      
+      // Apply customization
+      const bgColor = document.getElementById("bgColor").value;
+      const borderStyle = document.getElementById("borderStyle").value;
+      const fontFamily = document.getElementById("fontFamily").value;
+      
+      const cert = document.getElementById("certificate");
+      cert.style.background = bgColor;
+      cert.style.borderStyle = borderStyle;
+      cert.style.fontFamily = fontFamily;
+      
+      // Handle uploaded image
+      const fileInput = document.getElementById("uploadImage");
+      const certImage = document.getElementById("certImage");
+      if (fileInput.files && fileInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          certImage.src = e.target.result;
+        }
+        reader.readAsDataURL(fileInput.files[0]);
+      }
+      
+      document.getElementById("certName").innerText = `Name: ${name}`;
+      document.getElementById("certText").innerText = `Number: ${number} | Hobby: ${hobby}`;
+      
+      document.getElementById("certificate").style.display = "block";
+      document.getElementById("customizeSection").style.display = "none";
+    }
+  </script>
+</body>
+</html>
